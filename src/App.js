@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 
 function App() {
-  // Teste
+  // Começando Projeto
   return (
     <span>Hello, App!</span>
   );
