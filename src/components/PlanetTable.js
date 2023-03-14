@@ -1,44 +1,47 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PlanetContext from '../context/PlanetContext';
 import './componentsCSS.css';
 
 function PlanetTable() {
   const { planetsInfo } = useContext(PlanetContext);
   console.log(planetsInfo.results);
-  let planets = [];
-  if (planetsInfo.results !== undefined) {
-    planets = planetsInfo.results.map((planet) => {
-      const {
-        name,
-        diameter,
-        climate,
-        gravity,
-        terrain,
-        population,
-        films,
-        created,
-        edited,
-        url,
-      } = planet;
-      return (
-        <tr key={ name }>
-          <td>{ name }</td>
-          <td>{ planet.rotation_period }</td>
-          <td>{ planet.orbital_period }</td>
-          <td>{ diameter }</td>
-          <td>{ climate }</td>
-          <td>{ gravity }</td>
-          <td>{ terrain }</td>
-          <td>{ planet.surface_water}</td>
-          <td>{ population }</td>
-          <td>{ films }</td>
-          <td>{ created}</td>
-          <td>{ edited }</td>
-          <td>{ url }</td>
-        </tr>
-      );
-    });
-  }
+  const [planets, setPlanets] = useState([]);
+  useEffect(() => {
+    if (planetsInfo.results !== undefined) {
+      setPlanets(planetsInfo.results.map((planet) => {
+        const {
+          name,
+          diameter,
+          climate,
+          gravity,
+          terrain,
+          population,
+          films,
+          created,
+          edited,
+          url,
+        } = planet;
+        return (
+          <tr key={ name }>
+            <td>{ name }</td>
+            <td>{ planet.rotation_period }</td>
+            <td>{ planet.orbital_period }</td>
+            <td>{ diameter }</td>
+            <td>{ climate }</td>
+            <td>{ gravity }</td>
+            <td>{ terrain }</td>
+            <td>{ planet.surface_water}</td>
+            <td>{ population }</td>
+            <td>{ films }</td>
+            <td>{ created}</td>
+            <td>{ edited }</td>
+            <td>{ url }</td>
+          </tr>
+        );
+      }));
+    }
+  }, [planetsInfo]);
+
   return (
     <table>
       <thead>
