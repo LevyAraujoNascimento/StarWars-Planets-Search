@@ -3,45 +3,58 @@ import PlanetContext from '../context/PlanetContext';
 import './componentsCSS.css';
 
 function PlanetTable() {
-  const { planetsInfo } = useContext(PlanetContext);
-  console.log(planetsInfo.results);
+  const { planetsInfo, nameFilter } = useContext(PlanetContext);
+  console.log(nameFilter);
+
   const [planets, setPlanets] = useState([]);
+
+  const tableMount = (array) => {
+    const newPlanets = array.map((planet) => {
+      const {
+        name,
+        diameter,
+        climate,
+        gravity,
+        terrain,
+        population,
+        films,
+        created,
+        edited,
+        url,
+      } = planet;
+      return (
+        <tr key={ name }>
+          <td>{ name }</td>
+          <td>{ planet.rotation_period }</td>
+          <td>{ planet.orbital_period }</td>
+          <td>{ diameter }</td>
+          <td>{ climate }</td>
+          <td>{ gravity }</td>
+          <td>{ terrain }</td>
+          <td>{ planet.surface_water}</td>
+          <td>{ population }</td>
+          <td>{ films }</td>
+          <td>{ created}</td>
+          <td>{ edited }</td>
+          <td>{ url }</td>
+        </tr>
+      );
+    });
+    setPlanets(newPlanets);
+  };
+
   useEffect(() => {
     if (planetsInfo.results !== undefined) {
-      setPlanets(planetsInfo.results.map((planet) => {
-        const {
-          name,
-          diameter,
-          climate,
-          gravity,
-          terrain,
-          population,
-          films,
-          created,
-          edited,
-          url,
-        } = planet;
-        return (
-          <tr key={ name }>
-            <td>{ name }</td>
-            <td>{ planet.rotation_period }</td>
-            <td>{ planet.orbital_period }</td>
-            <td>{ diameter }</td>
-            <td>{ climate }</td>
-            <td>{ gravity }</td>
-            <td>{ terrain }</td>
-            <td>{ planet.surface_water}</td>
-            <td>{ population }</td>
-            <td>{ films }</td>
-            <td>{ created}</td>
-            <td>{ edited }</td>
-            <td>{ url }</td>
-          </tr>
-        );
-      }));
+      let resultados = planetsInfo.results;
+      if (nameFilter !== '') {
+        const newResultados = resultados.filter((element) => (
+          element.name.includes(nameFilter)
+        ));
+        resultados = newResultados;
+      }
+      tableMount(resultados);
     }
-  }, [planetsInfo]);
-
+  }, [planetsInfo, nameFilter]);
   return (
     <table>
       <thead>
