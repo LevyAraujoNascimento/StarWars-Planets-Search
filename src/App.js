@@ -1,10 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PlanetTable from './components/PlanetTable';
 import './App.css';
+import PlanetContext from './context/PlanetContext';
 
 function App() {
-  // Começando Projeto
+  const [planetsInfo, setInfo] = useState({});
+
+  useEffect(() => {
+    fetch('https://swapi.dev/api/planets')
+      .then((result) => result.json())
+      .then((data) => setInfo(data))
+      .catch((error) => console.error(error));
+  }, []);
+
+  const context = {
+    planetsInfo,
+  };
+
   return (
-    <span>Hello, App!</span>
+    <PlanetContext.Provider value={ context }>
+      <PlanetTable />
+    </PlanetContext.Provider>
   );
 }
 
