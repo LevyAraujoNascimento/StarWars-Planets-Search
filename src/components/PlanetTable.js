@@ -3,8 +3,8 @@ import PlanetContext from '../context/PlanetContext';
 import './componentsCSS.css';
 
 function PlanetTable() {
-  const { planetsInfo, nameFilter } = useContext(PlanetContext);
-  console.log(nameFilter);
+  const { planetsInfo, nameFilter, filtrar,
+    coluna, operador, count } = useContext(PlanetContext);
 
   const [planets, setPlanets] = useState([]);
 
@@ -52,9 +52,32 @@ function PlanetTable() {
         ));
         resultados = newResultados;
       }
+      if (filtrar === true) {
+        let newResultados = [];
+        switch (operador) {
+        case 'maior que':
+          newResultados = resultados.filter((e) => (
+            parseFloat(e[coluna]) > parseFloat(count)
+          ));
+          break;
+        case 'menor que':
+          newResultados = resultados.filter((e) => (
+            parseFloat(e[coluna]) < parseFloat(count)
+          ));
+          break;
+        case 'igual a':
+          newResultados = resultados.filter((e) => (
+            parseFloat(e[coluna]) === parseFloat(count)
+          ));
+          break;
+        default:
+          break;
+        }
+        resultados = newResultados;
+      }
       tableMount(resultados);
     }
-  }, [planetsInfo, nameFilter]);
+  }, [planetsInfo, nameFilter, filtrar, coluna, operador, count]);
   return (
     <table>
       <thead>
