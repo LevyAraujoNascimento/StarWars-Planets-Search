@@ -2,11 +2,13 @@ import React, { useContext, useState } from 'react';
 import PlanetContext from '../context/PlanetContext';
 
 function FilterMenu() {
-  const { nameOnChange, onFilter } = useContext(PlanetContext);
+  const { nameOnChange, onFilter, applyFilters } = useContext(PlanetContext);
 
   const [newColuna, setNewColuna] = useState('population');
   const [newOperador, setNewOperador] = useState('maior que');
   const [newCount, setNewCount] = useState('0');
+
+  const [filters, setFilters] = useState([]);
 
   const inputOnChange = ({ target }) => {
     nameOnChange(target.value);
@@ -24,8 +26,22 @@ function FilterMenu() {
     setNewCount(target.value);
   };
 
+  const mountFilters = () => {
+    const newFilters = applyFilters.map((element) => {
+      const { coluna, operador, count } = element;
+      const text = `${coluna} ${operador} ${count}`;
+      return (
+        <li key={ text }>
+          <p>{ text }</p>
+        </li>
+      );
+    });
+    setFilters(newFilters);
+  };
+
   const submitFilter = () => {
     onFilter(newColuna, newOperador, newCount);
+    mountFilters();
   };
 
   return (
@@ -76,6 +92,9 @@ function FilterMenu() {
       >
         Filtrar
       </button>
+      <ul>
+        { filters }
+      </ul>
     </fieldset>
   );
 }

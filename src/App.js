@@ -7,11 +7,9 @@ import FilterMenu from './components/FilterMenu';
 function App() {
   const [planetsInfo, setInfo] = useState({});
   const [nameFilter, setNameFilter] = useState('');
-  const [filtrar, setFilter] = useState(false);
 
-  const [coluna, setColuna] = useState('population');
-  const [operador, setOperador] = useState('maior que');
-  const [count, setCount] = useState('0');
+  const [applyFilters, setApplyFilters] = useState([]);
+  const [numFilters, setNumFilters] = useState(0);
 
   useEffect(() => {
     fetch('https://swapi.dev/api/planets')
@@ -25,19 +23,22 @@ function App() {
   }
 
   function onFilter(newColuna, newOperador, newCount) {
-    setColuna(newColuna);
-    setOperador(newOperador);
-    setCount(newCount);
-    setFilter(true);
+    const newFilter = {
+      coluna: newColuna,
+      operador: newOperador,
+      count: newCount,
+    };
+    const newApplyFilters = applyFilters;
+    newApplyFilters.push(newFilter);
+    setApplyFilters(newApplyFilters);
+    setNumFilters(numFilters + 1);
   }
 
   const context = {
     planetsInfo,
     nameFilter,
-    filtrar,
-    coluna,
-    operador,
-    count,
+    applyFilters,
+    numFilters,
     nameOnChange,
     onFilter,
   };

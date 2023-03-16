@@ -3,8 +3,8 @@ import PlanetContext from '../context/PlanetContext';
 import './componentsCSS.css';
 
 function PlanetTable() {
-  const { planetsInfo, nameFilter, filtrar,
-    coluna, operador, count } = useContext(PlanetContext);
+  const { planetsInfo, nameFilter, applyFilters,
+    numFilters } = useContext(PlanetContext);
 
   const [planets, setPlanets] = useState([]);
 
@@ -46,38 +46,43 @@ function PlanetTable() {
   useEffect(() => {
     if (planetsInfo.results !== undefined) {
       let resultados = planetsInfo.results;
+      if (numFilters > 0) {
+        let newResultados = resultados;
+        let aux = [];
+        applyFilters.forEach((filtro) => {
+          const { coluna, count } = filtro;
+          switch (filtro.operador) {
+          case 'maior que':
+            aux = newResultados.filter((e) => (
+              parseFloat(e[coluna]) > parseFloat(count)
+            ));
+            break;
+          case 'menor que':
+            aux = newResultados.filter((e) => (
+              parseFloat(e[coluna]) < parseFloat(count)
+            ));
+            break;
+          case 'igual a':
+            aux = newResultados.filter((e) => (
+              parseFloat(e[coluna]) === parseFloat(count)
+            ));
+            break;
+          default:
+            break;
+          }
+          newResultados = aux;
+        });
+        resultados = newResultados;
+      }
       if (nameFilter !== '') {
         const newResultados = resultados.filter((element) => (
           element.name.includes(nameFilter)
         ));
         resultados = newResultados;
       }
-      if (filtrar === true) {
-        let newResultados = [];
-        switch (operador) {
-        case 'maior que':
-          newResultados = resultados.filter((e) => (
-            parseFloat(e[coluna]) > parseFloat(count)
-          ));
-          break;
-        case 'menor que':
-          newResultados = resultados.filter((e) => (
-            parseFloat(e[coluna]) < parseFloat(count)
-          ));
-          break;
-        case 'igual a':
-          newResultados = resultados.filter((e) => (
-            parseFloat(e[coluna]) === parseFloat(count)
-          ));
-          break;
-        default:
-          break;
-        }
-        resultados = newResultados;
-      }
       tableMount(resultados);
     }
-  }, [planetsInfo, nameFilter, filtrar, coluna, operador, count]);
+  }, [planetsInfo, nameFilter, applyFilters, numFilters]);
   return (
     <table>
       <thead>
