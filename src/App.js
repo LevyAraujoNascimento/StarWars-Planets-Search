@@ -11,6 +11,11 @@ function App() {
   const [applyFilters, setApplyFilters] = useState([]);
   const [numFilters, setNumFilters] = useState(0);
 
+  const [order, setOrder] = useState({
+    coluna: 'population',
+    ordem: '',
+  });
+
   useEffect(() => {
     fetch('https://swapi.dev/api/planets')
       .then((result) => result.json())
@@ -46,15 +51,25 @@ function App() {
     setApplyFilters([]);
   }
 
+  function sortOrder(newColuna, newOrdem) {
+    const newOrder = {
+      coluna: newColuna,
+      ordem: newOrdem,
+    };
+    setOrder(newOrder);
+  }
+
   const context = {
     planetsInfo,
     nameFilter,
     applyFilters,
     numFilters,
+    order,
     nameOnChange,
     onFilter,
     offFilter,
     offAllFilters,
+    sortOrder,
   };
 
   return (

@@ -3,10 +3,30 @@ import PlanetContext from '../context/PlanetContext';
 import './componentsCSS.css';
 
 function PlanetTable() {
+  const NEGATIVO = -1;
+  const POSITIVO = 1;
   const { planetsInfo, nameFilter, applyFilters,
-    numFilters } = useContext(PlanetContext);
+    numFilters, order } = useContext(PlanetContext);
 
   const [planets, setPlanets] = useState([]);
+
+  const ordenarAsc = (array) => {
+    array.sort((a, b) => {
+      if (a[order.coluna] === 'unknown') return POSITIVO;
+      if (b[order.coluna] === 'unknown') return NEGATIVO;
+      return parseFloat(a[order.coluna]) - parseFloat(b[order.coluna]);
+    });
+    return array;
+  };
+
+  const ordenarDesc = (array) => {
+    array.sort((a, b) => {
+      if (a[order.coluna] === 'unknown') return POSITIVO;
+      if (b[order.coluna] === 'unknown') return NEGATIVO;
+      return parseFloat(b[order.coluna]) - parseFloat(a[order.coluna]);
+    });
+    return array;
+  };
 
   const tableMount = (array) => {
     const newPlanets = array.map((planet) => {
@@ -24,7 +44,7 @@ function PlanetTable() {
       } = planet;
       return (
         <tr key={ name }>
-          <td>{ name }</td>
+          <td data-testid="planet-name">{ name }</td>
           <td>{ planet.rotation_period }</td>
           <td>{ planet.orbital_period }</td>
           <td>{ diameter }</td>
@@ -80,9 +100,15 @@ function PlanetTable() {
         ));
         resultados = newResultados;
       }
+      if (order.ordem === 'ASC') {
+        resultados = ordenarAsc(resultados);
+      }
+      if (order.ordem === 'DESC') {
+        resultados = ordenarDesc(resultados);
+      }
       tableMount(resultados);
     }
-  }, [planetsInfo, nameFilter, applyFilters, numFilters]);
+  }, [planetsInfo, nameFilter, applyFilters, numFilters, order]);
   return (
     <table>
       <thead>

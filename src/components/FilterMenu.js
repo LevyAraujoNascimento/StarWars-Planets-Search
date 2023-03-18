@@ -3,11 +3,13 @@ import PlanetContext from '../context/PlanetContext';
 
 function FilterMenu() {
   const { nameOnChange, onFilter, offFilter, applyFilters,
-    offAllFilters } = useContext(PlanetContext);
+    offAllFilters, sortOrder } = useContext(PlanetContext);
 
   const [newColuna, setNewColuna] = useState('population');
   const [newOperador, setNewOperador] = useState('maior que');
   const [newCount, setNewCount] = useState('0');
+  const [newOrderColuna, setNewOrderColuna] = useState('population');
+  const [newOrder, setNewOrder] = useState('');
 
   const [filters, setFilters] = useState([]);
 
@@ -32,6 +34,14 @@ function FilterMenu() {
 
   const countOnChange = ({ target }) => {
     setNewCount(target.value);
+  };
+
+  const orderColunaOnChange = ({ target }) => {
+    setNewOrderColuna(target.value);
+  };
+
+  const orderOnChange = ({ target }) => {
+    setNewOrder(target.value);
   };
 
   const removeColunaOptions = (removedColuna) => {
@@ -85,6 +95,7 @@ function FilterMenu() {
         data-testid="name-filter"
         onChange={ inputOnChange }
       />
+      <br />
       <label htmlFor="coluna">Coluna</label>
       <select
         name="coluna"
@@ -99,7 +110,7 @@ function FilterMenu() {
       <select
         name="operador"
         id="operador"
-        defaultValue=">"
+        defaultValue="maior que"
         data-testid="comparison-filter"
         onClick={ operadorOnChange }
       >
@@ -121,6 +132,49 @@ function FilterMenu() {
       >
         Filtrar
       </button>
+      <br />
+      <label htmlFor="order">Ordenar</label>
+      <select
+        name="order"
+        id="order"
+        defaultValue="population"
+        data-testid="column-sort"
+        onClick={ orderColunaOnChange }
+      >
+        <option value="population">population</option>
+        <option value="orbital_period">orbital_period</option>
+        <option value="diameter">diameter</option>
+        <option value="rotation_period">rotation_period</option>
+        <option value="surface_water">surface_water</option>
+      </select>
+      <br />
+      <label htmlFor="ASC">Ascendente</label>
+      <input
+        type="radio"
+        id="ASC"
+        name="Orders"
+        value="ASC"
+        data-testid="column-sort-input-asc"
+        onClick={ orderOnChange }
+      />
+      <label htmlFor="DESC">Descendente</label>
+      <input
+        type="radio"
+        id="DESC"
+        name="Orders"
+        value="DESC"
+        data-testid="column-sort-input-desc"
+        onClick={ orderOnChange }
+      />
+      <br />
+      <button
+        type="button"
+        data-testid="column-sort-button"
+        onClick={ () => sortOrder(newOrderColuna, newOrder) }
+      >
+        Ordenar
+      </button>
+      <br />
       <button
         type="button"
         data-testid="button-remove-filters"
