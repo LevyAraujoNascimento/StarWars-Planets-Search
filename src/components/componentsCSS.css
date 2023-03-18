@@ -5,7 +5,7 @@ table {
 
 .filtro {
   display: flex;
-  justify-content: space-evenly;
   border: 2px solid black;
+  justify-content: space-evenly;
   width: 30%;
 }
