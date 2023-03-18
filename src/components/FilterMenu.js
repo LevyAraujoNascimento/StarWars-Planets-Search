@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import PlanetContext from '../context/PlanetContext';
 
 function FilterMenu() {
-  const { nameOnChange, onFilter, applyFilters } = useContext(PlanetContext);
+  const { nameOnChange, onFilter, offFilter, applyFilters,
+    offAllFilters } = useContext(PlanetContext);
 
   const [newColuna, setNewColuna] = useState('population');
   const [newOperador, setNewOperador] = useState('maior que');
@@ -10,9 +11,11 @@ function FilterMenu() {
 
   const [filters, setFilters] = useState([]);
 
-  const [colunaOptions, setColunaOptions] = useState([
+  const INITIAL_COLUNA_STATE = [
     'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water',
-  ]);
+  ];
+
+  const [colunaOptions, setColunaOptions] = useState(INITIAL_COLUNA_STATE);
   const [liOptions, setLiOptions] = useState([]);
 
   const inputOnChange = ({ target }) => {
@@ -31,28 +34,6 @@ function FilterMenu() {
     setNewCount(target.value);
   };
 
-  const mountFilters = () => {
-    const newFilters = applyFilters.map((element) => {
-      const { coluna, operador, count } = element;
-      const text = `${coluna} ${operador} ${count}`;
-      return (
-        <li key={ text }>
-          <p>{ text }</p>
-        </li>
-      );
-    });
-    setFilters(newFilters);
-  };
-
-  const mountColunaOptions = () => {
-    const newColunaOptions = colunaOptions.map((element) => (
-      <option value={ element } key={ element }>
-        { element }
-      </option>
-    ));
-    return newColunaOptions;
-  };
-
   const removeColunaOptions = (removedColuna) => {
     const newColunaOptions = colunaOptions.filter((element) => (
       element !== removedColuna
@@ -62,13 +43,39 @@ function FilterMenu() {
 
   const submitFilter = () => {
     onFilter(newColuna, newOperador, newCount);
-    mountFilters();
     removeColunaOptions(newColuna);
   };
 
   useEffect(() => {
+    const newFilters = applyFilters.map((element) => {
+      const { coluna, operador, count } = element;
+      const text = `${coluna} ${operador} ${count}`;
+      return (
+        <li key={ text } data-testid="filter" className="filtro">
+          <p>{ text }</p>
+          <button
+            onClick={ () => {
+              const newColunaOptions = colunaOptions;
+              newColunaOptions.push(coluna);
+              setColunaOptions(newColunaOptions);
+              offFilter(coluna);
+            } }
+          >
+            Remover
+          </button>
+        </li>
+      );
+    });
+    setFilters(newFilters);
+
+    const newColunaOptions = colunaOptions.map((element) => (
+      <option value={ element } key={ element }>
+        { element }
+      </option>
+    ));
+    setLiOptions(newColunaOptions);
     setNewColuna(colunaOptions[0]);
-  }, [colunaOptions]);
+  }, [applyFilters, offFilter, colunaOptions]);
 
   return (
     <fieldset>
@@ -86,7 +93,7 @@ function FilterMenu() {
         data-testid="column-filter"
         onClick={ colunaOnChange }
       >
-        { mountColunaOptions() }
+        { liOptions }
       </select>
       <label htmlFor="operador">Operador</label>
       <select
@@ -113,6 +120,16 @@ function FilterMenu() {
         onClick={ submitFilter }
       >
         Filtrar
+      </button>
+      <button
+        type="button"
+        data-testid="button-remove-filters"
+        onClick={ () => {
+          setColunaOptions(INITIAL_COLUNA_STATE);
+          offAllFilters();
+        } }
+      >
+        Remover Filtros
       </button>
       <ul>
         { filters }

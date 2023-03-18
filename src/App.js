@@ -34,6 +34,18 @@ function App() {
     setNumFilters(numFilters + 1);
   }
 
+  function offFilter(removedColuna) {
+    const newApplyFilters = applyFilters.filter((element) => (
+      element.coluna !== removedColuna
+    ));
+    setApplyFilters(newApplyFilters);
+    setNumFilters(numFilters - 1);
+  }
+
+  function offAllFilters() {
+    setApplyFilters([]);
+  }
+
   const context = {
     planetsInfo,
     nameFilter,
@@ -41,6 +53,8 @@ function App() {
     numFilters,
     nameOnChange,
     onFilter,
+    offFilter,
+    offAllFilters,
   };
 
   return (
