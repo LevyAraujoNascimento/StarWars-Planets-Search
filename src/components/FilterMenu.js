@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PlanetContext from '../context/PlanetContext';
 
 function FilterMenu() {
@@ -9,6 +9,11 @@ function FilterMenu() {
   const [newCount, setNewCount] = useState('0');
 
   const [filters, setFilters] = useState([]);
+
+  const [colunaOptions, setColunaOptions] = useState([
+    'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water',
+  ]);
+  const [liOptions, setLiOptions] = useState([]);
 
   const inputOnChange = ({ target }) => {
     nameOnChange(target.value);
@@ -39,10 +44,31 @@ function FilterMenu() {
     setFilters(newFilters);
   };
 
+  const mountColunaOptions = () => {
+    const newColunaOptions = colunaOptions.map((element) => (
+      <option value={ element } key={ element }>
+        { element }
+      </option>
+    ));
+    return newColunaOptions;
+  };
+
+  const removeColunaOptions = (removedColuna) => {
+    const newColunaOptions = colunaOptions.filter((element) => (
+      element !== removedColuna
+    ));
+    setColunaOptions(newColunaOptions);
+  };
+
   const submitFilter = () => {
     onFilter(newColuna, newOperador, newCount);
     mountFilters();
+    removeColunaOptions(newColuna);
   };
+
+  useEffect(() => {
+    setNewColuna(colunaOptions[0]);
+  }, [colunaOptions]);
 
   return (
     <fieldset>
@@ -60,11 +86,7 @@ function FilterMenu() {
         data-testid="column-filter"
         onClick={ colunaOnChange }
       >
-        <option value="population">population</option>
-        <option value="orbital_period">orbital_period</option>
-        <option value="diameter">diameter</option>
-        <option value="rotation_period">rotation_period</option>
-        <option value="surface_water">surface_water</option>
+        { mountColunaOptions() }
       </select>
       <label htmlFor="operador">Operador</label>
       <select
