@@ -4,8 +4,8 @@ table {
 }
 
 .filtro {
-  display: flex;
   border: 2px solid black;
+  display: flex;
   justify-content: space-evenly;
   width: 30%;
 }
