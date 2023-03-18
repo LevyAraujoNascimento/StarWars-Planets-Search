@@ -9,7 +9,7 @@ function PlanetTable() {
     numFilters, order } = useContext(PlanetContext);
 
   const [planets, setPlanets] = useState([]);
-
+  /*
   const ordenarAsc = (array) => {
     array.sort((a, b) => {
       if (a[order.coluna] === 'unknown') return POSITIVO;
@@ -27,7 +27,7 @@ function PlanetTable() {
     });
     return array;
   };
-
+*/
   const tableMount = (array) => {
     const newPlanets = array.map((planet) => {
       const {
@@ -63,6 +63,25 @@ function PlanetTable() {
     setPlanets(newPlanets);
   };
 
+  const switchOperador = (coluna, operador, count, newResultados) => {
+    switch (operador) {
+    case 'maior que':
+      return newResultados.filter((e) => (
+        parseFloat(e[coluna]) > parseFloat(count)
+      ));
+    case 'menor que':
+      return newResultados.filter((e) => (
+        parseFloat(e[coluna]) < parseFloat(count)
+      ));
+    case 'igual a':
+      return newResultados.filter((e) => (
+        parseFloat(e[coluna]) === parseFloat(count)
+      ));
+    default:
+      break;
+    }
+  };
+
   useEffect(() => {
     if (planetsInfo.results !== undefined) {
       let resultados = planetsInfo.results;
@@ -70,26 +89,8 @@ function PlanetTable() {
         let newResultados = resultados;
         let aux = [];
         applyFilters.forEach((filtro) => {
-          const { coluna, count } = filtro;
-          switch (filtro.operador) {
-          case 'maior que':
-            aux = newResultados.filter((e) => (
-              parseFloat(e[coluna]) > parseFloat(count)
-            ));
-            break;
-          case 'menor que':
-            aux = newResultados.filter((e) => (
-              parseFloat(e[coluna]) < parseFloat(count)
-            ));
-            break;
-          case 'igual a':
-            aux = newResultados.filter((e) => (
-              parseFloat(e[coluna]) === parseFloat(count)
-            ));
-            break;
-          default:
-            break;
-          }
+          const { coluna, operador, count } = filtro;
+          aux = switchOperador(coluna, operador, count, newResultados);
           newResultados = aux;
         });
         resultados = newResultados;
@@ -100,15 +101,17 @@ function PlanetTable() {
         ));
         resultados = newResultados;
       }
-      if (order.ordem === 'ASC') {
-        resultados = ordenarAsc(resultados);
-      }
-      if (order.ordem === 'DESC') {
-        resultados = ordenarDesc(resultados);
-      }
+      resultados.sort((a, b) => {
+        if (a[order.coluna] === 'unknown') return POSITIVO;
+        if (b[order.coluna] === 'unknown') return NEGATIVO;
+        if (order.ordem === 'ASC') {
+          return parseFloat(a[order.coluna]) - parseFloat(b[order.coluna]);
+        }
+        return parseFloat(b[order.coluna]) - parseFloat(a[order.coluna]);
+      });
       tableMount(resultados);
     }
-  }, [planetsInfo, nameFilter, applyFilters, numFilters, order]);
+  }, [planetsInfo, nameFilter, applyFilters, numFilters, order, NEGATIVO, POSITIVO]);
   return (
     <table>
       <thead>
