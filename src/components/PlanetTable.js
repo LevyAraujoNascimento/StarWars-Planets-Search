@@ -9,25 +9,7 @@ function PlanetTable() {
     numFilters, order } = useContext(PlanetContext);
 
   const [planets, setPlanets] = useState([]);
-  /*
-  const ordenarAsc = (array) => {
-    array.sort((a, b) => {
-      if (a[order.coluna] === 'unknown') return POSITIVO;
-      if (b[order.coluna] === 'unknown') return NEGATIVO;
-      return parseFloat(a[order.coluna]) - parseFloat(b[order.coluna]);
-    });
-    return array;
-  };
 
-  const ordenarDesc = (array) => {
-    array.sort((a, b) => {
-      if (a[order.coluna] === 'unknown') return POSITIVO;
-      if (b[order.coluna] === 'unknown') return NEGATIVO;
-      return parseFloat(b[order.coluna]) - parseFloat(a[order.coluna]);
-    });
-    return array;
-  };
-*/
   const tableMount = (array) => {
     const newPlanets = array.map((planet) => {
       const {
